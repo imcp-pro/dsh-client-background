@@ -3,6 +3,10 @@
   "version": "0.1.0",
   "description": "Replaces the dsh Web client base background with a randomly switching public Unsplash image, revealed through translucent base surfaces.",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/imcp-pro/dsh-client-background.git"
+  },
   "type": "module",
   "main": "lib/index.js",
   "types": "lib/types/index.d.ts",
@@ -33,7 +37,7 @@
   "scripts": {
     "build": "node build.mjs && tsc -p tsconfig.json",
     "test": "vitest run",
-    "prepack": "npm run build"
+    "prepare": "npm run build"
   },
   "peerDependencies": {
     "@deepseek-ai/cordis": "^4.0.2"
