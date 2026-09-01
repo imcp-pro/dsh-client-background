@@ -1,0 +1,9 @@
+# The dsh bundle patch for this external client plugin.
+#
+# Installed with `dsh plugin --profile web add <this-package>`; the layer
+# inserts one `dsh.client` row into the Web composition. The package's own
+# `dsh.client` manifest (in package.json) is what the client-modules scan reads
+# to serve its browser half.
+- insert:
+    - id: ui-background
+      name: '@imcp-pro/dsh-client-background'
