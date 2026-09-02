@@ -1,9 +1,8 @@
-/** `client-background` namespace dictionaries for the plugin card. */
+/** `client-background` namespace dictionaries for the plugin's inventory entry. */
 
 /** Simplified Chinese dictionary (the key-set source of truth). */
 export const zh = {
-  title: '背景',
-  description: '动态背景与自动更新。',
+  title: '壁纸背景',
   enabled: '启用背景',
   enabledHint: '关闭后移除背景图与切换效果，插件仍保持安装。',
   rotationInterval: '切换间隔（秒）',
@@ -28,20 +27,19 @@ export const zh = {
   unavailable: '当前无法读取设置。',
 } satisfies Record<string, string>
 
-/** The card namespace key union. */
+/** The plugin namespace key union. */
 export type BackgroundLocaleKey = keyof typeof zh
 
 declare module '@deepseek-ai/dsh-client-ui-slots' {
   interface LocaleNamespaceMap {
-    /** The background plugin card's copy. */
+    /** The background plugin entry's copy. */
     'client-background': BackgroundLocaleKey
   }
 }
 
 /** English dictionary, checked complete against the zh key set. */
 export const en: Record<BackgroundLocaleKey, string> = {
-  title: 'Background',
-  description: 'Dynamic background and auto update.',
+  title: 'Wallpaper background',
   enabled: 'Enable background',
   enabledHint: 'Turning it off removes the image and rotation; the plugin stays installed.',
   rotationInterval: 'Rotation interval (seconds)',

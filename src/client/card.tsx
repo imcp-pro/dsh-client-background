@@ -1,31 +1,34 @@
 /**
- * The background plugin's settings card: a runtime enable switch, the rotation
- * interval, the auto-update switch and its check interval, and the update
- * status with the command to run for a manual update.
+ * The background plugin's inventory entry: a display-name override
+ * ("壁纸背景") and a settings detail (enable switch, rotation interval,
+ * auto-update check) that the plugin list renders inside this plugin's own
+ * card.
  *
  * @module @imcp-pro/dsh-client-background/client/card
  */
 import type { InjectFace, PropsLocale, PropsRuntime } from '@deepseek-ai/dsh-client-ui-slots'
-// Type-only: pulls the `settings.plugin.item` SlotMap declaration into this program.
-import type {} from '@deepseek-ai/dsh-client-ui-settings-plugins/client'
+// Type-only: pulls the `settings.pluginInventory.*` SlotMap declarations into this program.
+import type {} from '@deepseek-ai/dsh-client-ui-settings-plugin-inventory/client'
 import {
   DEFAULT_SETTINGS, GITHUB_REPO, MIN_ROTATION_INTERVAL_SECONDS,
   MIN_UPDATE_CHECK_INTERVAL_SECONDS, type BackgroundSettings,
 } from '../config.ts'
 import type { BackgroundCardFace } from './card-controller.ts'
 
-/** Component props assembled by the Settings slot renderer. */
-export type BackgroundCardProps =
-  PropsRuntime<'settings.plugin.item'>
+/** Title-override props (the inventory supplies nothing). */
+export type BackgroundTitleProps =
+  PropsRuntime<'settings.pluginInventory.title'>
+  & PropsLocale<'client-background'>
+
+/** Detail-form props assembled by the inventory slot renderer. */
+export type BackgroundDetailProps =
+  PropsRuntime<'settings.pluginInventory.detail'>
   & PropsLocale<'client-background'>
   & InjectFace<BackgroundCardFace>
 
-/** Owned card stylesheet, injected once by the plugin apply. */
+/** Owned detail stylesheet, injected once by the plugin apply. */
 export const cardCss = [
-  '.dbg-card { display: flex; flex-direction: column; gap: 14px; }',
-  '.dbg-header { display: flex; flex-direction: column; gap: 4px; }',
-  '.dbg-title { margin: 0; font-size: 1rem; font-weight: 600; }',
-  '.dbg-desc { margin: 0; opacity: 0.7; font-size: 0.875rem; }',
+  '.dbg-detail { display: flex; flex-direction: column; gap: 12px; }',
   '.dbg-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }',
   '.dbg-toggle-row { align-items: center; }',
   '.dbg-field { display: flex; flex-direction: column; gap: 2px; min-width: 0; }',
@@ -43,15 +46,24 @@ export const cardCss = [
   '.dbg-unavailable { margin: 0; opacity: 0.7; }',
 ].join('\n')
 
-/** The manual update command the card surfaces. */
+/** The manual update command the detail surfaces. */
 const UPDATE_COMMAND = `dsh plugin --profile web update github:${GITHUB_REPO}`
 
 /**
- * Render the background plugin's card.
- * @param props - locale copy, the card snapshot, and its form actions.
- * @returns the card.
+ * Render the inventory card title.
+ * @param props - locale copy.
+ * @returns the display name.
  */
-export function BackgroundCard(props: BackgroundCardProps) {
+export function BackgroundTitle({ t }: BackgroundTitleProps) {
+  return <>{t('title')}</>
+}
+
+/**
+ * Render the background plugin's settings detail.
+ * @param props - locale copy, the card snapshot, and its form actions.
+ * @returns the settings form.
+ */
+export function BackgroundDetail(props: BackgroundDetailProps) {
   const { t } = props
   const state = props.useBackgroundCard(snapshot => snapshot)
   const value: BackgroundSettings = state.draft ?? state.saved ?? DEFAULT_SETTINGS
@@ -72,12 +84,7 @@ export function BackgroundCard(props: BackgroundCardProps) {
   }
 
   return (
-    <section className="dbg-card">
-      <header className="dbg-header">
-        <h3 className="dbg-title">{t('title')}</h3>
-        <p className="dbg-desc">{t('description')}</p>
-      </header>
-
+    <div className="dbg-detail">
       {unavailable && <p className="dbg-unavailable">{t('unavailable')}</p>}
 
       <label className="dbg-row dbg-toggle-row">
@@ -171,6 +178,6 @@ export function BackgroundCard(props: BackgroundCardProps) {
         </button>
       </footer>
       {state.saveError !== undefined && <p className="dbg-error">{state.saveError}</p>}
-    </section>
+    </div>
   )
 }

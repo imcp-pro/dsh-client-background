@@ -100,8 +100,8 @@ Then restart `dsh web`; the background appears and persists across restarts.
 
 ## Configure
 
-Open **Settings → Plugins → Plugin configuration** and expand the **Background**
-card:
+Open **Settings → Plugins → Plugin list**, then expand **Wallpaper background**
+under **Global plugins**:
 
 | Field | Default | Meaning |
 | --- | --- | --- |
@@ -110,7 +110,7 @@ card:
 | Check for updates | off | periodically poll GitHub for a newer commit |
 | Check interval (seconds) | 21600 | time between two update checks |
 
-When a newer commit is found, the card shows the update command to run (then
+When a newer commit is found, the entry shows the update command to run (then
 restart). Edits stage locally and apply on **Save**; **Discard** drops them.
 
 ## Develop
