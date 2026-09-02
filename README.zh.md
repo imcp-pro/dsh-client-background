@@ -2,40 +2,36 @@
 
 [English](README.md) | 中文
 
-用随机切换的公开 [Unsplash](https://unsplash.com) 图片替换 dsh Web 客户端的基础背景，并通过半透明的基础表面让图片透出。
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-一个可独立安装的 dsh **bundle**（适用于 `dsh --profile web`）——本仓库**就是**插件本身：不依赖 monorepo，也不需要框架源码 checkout。
+一个 [dsh](https://github.com/deepseek-ai/deepseek-harness) Web 客户端 bundle，用随机轮换的 [Unsplash](https://unsplash.com) 壁纸替换基础背景，并通过半透明表面透出。
 
-- 仓库：<https://github.com/imcp-pro/dsh-client-background>
-- 许可证：MIT
+![带壁纸背景的 dsh Web 客户端](docs/demo-1.png)
 
-## 作用
+## 特性
 
-- 在 `<body>` 上绘制一张公开图片（`cover`、居中、固定）。
-- 把两个基础背景主题 token（`--dsw-alias-bg-base`、`--dsw-specific-sidebar-fill`）覆盖为半透明，让图片透过对话区、详情区和侧边栏显示出来。
-- 提前预加载所有图片，使轮换命中浏览器缓存，而不是闪一下底色。
-- 按可配置的间隔随机切换图片。
-
-视觉效果只用浏览器全局对象（`document`、`Image`、`setInterval`）；它的配置是一个 settings namespace，由 Web 客户端的「插件」面板来编辑。
+- **100 张精选壁纸**，按可配置的间隔轮换。
+- **运行时开关** —— 无需卸载即可关闭背景效果。
+- **客户端更新检查** —— 轮询 GitHub 检查新 commit，并给出准确的更新命令。
+- **零框架耦合** —— 视觉效果只使用浏览器全局对象（`document`、`Image`、`setInterval`）。
 
 ## 环境要求
 
-- 一个 dsh Web profile（`dsh --profile web`，即 `dsh web`），带 `web-app` bundle。
-- 目标 dsh 版本需要暴露基础主题 token `--dsw-alias-bg-base` / `--dsw-specific-sidebar-fill`，切换 `body[data-ds-dark-theme]` 暗色模式属性，并提供「插件」设置面板（当前发布版中的稳定事实）。
+- 一个 dsh `web` profile（`dsh --profile web`，即 `dsh web`），带 `web-app` bundle。
+- 一个暴露基础主题 token `--dsw-alias-bg-base` / `--dsw-specific-sidebar-fill`、切换 `body[data-ds-dark-theme]` 暗色模式属性、并提供「插件」设置面板的 dsh 构建。
 
 ## 安装
 
-### 从这个仓库安装（git）
+### 从 GitHub 安装
 
 ```sh
 dsh plugin --profile web add github:imcp-pro/dsh-client-background
 ```
 
-插件的 `prepare` 脚本会在安装时构建 `lib/`（它没有被提交进仓库），而 pnpm ≥ 10 默认拦截 git 依赖的构建脚本、需要先加入白名单。所以第一次运行可能会报 `ERR_PNPM_GIT_DEP_PREPARE_NOT_ALLOWED`——这是预期现象，一步就能解决：
+插件的 `prepare` 脚本会在安装时构建 `lib/`（它没有被提交进仓库），而 pnpm ≥ 10 默认拦截 git 依赖的构建脚本、需要先加入白名单。所以第一次运行可能会报 `ERR_PNPM_GIT_DEP_PREPARE_NOT_ALLOWED`——这是预期现象，按以下步骤解决：
 
-1. 报错里会以 **“For example”** 的形式打印出准确的白名单 key，把那行
-   `@imcp-pro/dsh-client-background@https://codeload.github.com/…/tar.gz/<commit>`
-   复制下来。
+1. 复制报错里 **“For example”** 打印出的准确白名单 key：
+   `@imcp-pro/dsh-client-background@https://codeload.github.com/…/tar.gz/<commit>`。
 2. 把它粘到 web profile 的 `pnpm-workspace.yaml` 里的 `allowBuilds` 下
    （默认路径 `~/.dsh/profiles/web/pnpm-workspace.yaml`），然后重跑同一条命令。
 
@@ -45,10 +41,7 @@ allowBuilds:
   "@imcp-pro/dsh-client-background@https://codeload.github.com/imcp-pro/dsh-client-background/tar.gz/<commit>": true
 ```
 
-两个最容易踩的坑：
-
-- key 是**绑定 commit 的**——仓库每有一个新 commit，`<commit>` 就会变，所以一定要抄当前报错里的 key，别复用旧的。
-- key 用的是 **codeload 的 tar.gz 形式**（`https://codeload.github.com/…/tar.gz/<commit>`），不是 `git+https://` 也不是 `git+ssh://`，务必原样复制。
+> **注意：** key 是绑定 commit 的——仓库每有一个新 commit，`<commit>` 就会变，所以一定要抄当前报错里的 key。同时务必保留 codeload 的 tar.gz 形式（`https://codeload.github.com/…/tar.gz/<commit>`），不要写成 `git+https://` 或 `git+ssh://`。
 
 ### 从 agent 里安装（dsh / Claude Code / OpenCode）
 
@@ -81,14 +74,14 @@ dsh plugin --profile web add .
 
 打开 **设置 → 插件 → 插件列表**，展开 **全局插件** 下的 **壁纸背景**：
 
-| 字段 | 默认值 | 含义 |
+| 字段 | 默认值 | 说明 |
 | --- | --- | --- |
 | 启用背景 | 开 | 运行时关闭开关；插件仍保持安装 |
 | 切换间隔（秒） | 20 | 背景图每隔多久自动切换一次 |
 | 自动检查更新 | 关 | 定期检查 GitHub 仓库是否有新版本 |
 | 检查间隔（秒） | 21600 | 两次更新检查之间的间隔 |
 
-检测到新 commit 后，条目会显示要运行的更新命令（运行后重启）。修改先暂存，**保存** 后生效，**放弃修改** 则丢弃。
+修改先暂存，**保存** 后生效，**放弃修改** 则丢弃。检测到新 commit 后，条目会显示要运行的更新命令（运行后重启）。
 
 ## 开发
 
@@ -106,10 +99,14 @@ npm test        # vitest（jsdom）
 npm publish    # `prepare` 会执行构建；发布 lib/ + cordis.patch.yml
 ```
 
-本包发布 `lib/` 和 `cordis.patch.yml`（插入 `dsh.client` 行的 bundle 补丁层）。它声明 `dsh.bundle.patch`（让 `dsh plugin add` 注册该层）、`dsh.client`（让 client-modules 宿主提供浏览器半侧），以及由 Host 半侧注册的 `client-background` settings namespace。
+本包发布 `lib/` 和 `cordis.patch.yml`。它声明 `dsh.bundle.patch`（让 `dsh plugin add` 注册该层）、`dsh.client`（让 client-modules 宿主提供浏览器半侧），以及由 Host 半侧注册的 `client-background` settings namespace。
 
 ## 说明
 
 - **即时切换，无淡入淡出** —— 预加载消除了加载闪烁，但图片仍是一步切换。
 - **`background-attachment: fixed` 在 iOS Safari 上被忽略** —— 在那里图片会随页面滚动。
 - **更新检查在客户端进行** —— 浏览器轮询 GitHub 默认分支，把它的 commit 和构建时烙进 bundle 的 commit 比较，因此绝不会改动正在运行的安装。
+
+## 许可证
+
+[MIT](LICENSE)
