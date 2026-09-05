@@ -117,21 +117,29 @@ const DEFAULT_IMAGES: readonly string[] = [
 ]
 
 /** How opaque the base surfaces stay; 1 hides the image, 0 shows it fully. */
-const SURFACE_OPACITY = 0.55
+const LIGHT_SURFACE_OPACITY = 0.55
+
+/** Dark surfaces stay slightly more see-through so the photo reads as a moody backdrop. */
+const DARK_SURFACE_OPACITY = 0.55
+
+/** Slight photo darkening in light mode so bright photos read as a calm pastel backdrop. */
+const LIGHT_SCRIM_ALPHA = 0.15
 
 /** The owned stylesheet: translucent base tokens plus the body image rule. */
 function backgroundCss(): string {
-  const alpha = SURFACE_OPACITY
+  const lightAlpha = LIGHT_SURFACE_OPACITY
+  const darkAlpha = DARK_SURFACE_OPACITY
   return [
-    // Light palette (the base tokens live on :root).
-    ':root {',
-    `  --dsw-alias-bg-base: rgba(255, 255, 255, ${alpha}) !important;`,
-    `  --dsw-specific-sidebar-fill: rgba(249, 250, 251, ${alpha}) !important;`,
+    // Light palette (declared on body so it beats the app's own `body`
+    // token declarations; a :root override would only be inherited).
+    'body {',
+    `  --dsw-alias-bg-base: rgba(255, 255, 255, ${lightAlpha}) !important;`,
+    `  --dsw-specific-sidebar-fill: rgba(249, 250, 251, ${lightAlpha}) !important;`,
     '}',
     // Dark palette (the theme presenter toggles body[data-ds-dark-theme]).
     'body[data-ds-dark-theme] {',
-    `  --dsw-alias-bg-base: rgba(21, 21, 23, ${alpha}) !important;`,
-    `  --dsw-specific-sidebar-fill: rgba(27, 27, 28, ${alpha}) !important;`,
+    `  --dsw-alias-bg-base: rgba(21, 21, 23, ${darkAlpha}) !important;`,
+    `  --dsw-specific-sidebar-fill: rgba(27, 27, 28, ${darkAlpha}) !important;`,
     '}',
     'body {',
     `  background-image: var(${BACKGROUND_VARIABLE}, none);`,
@@ -140,6 +148,17 @@ function backgroundCss(): string {
     '  background-repeat: no-repeat;',
     '  background-attachment: fixed;',
     '}',
+    // Light-mode scrim: a slight darkening over the photo, behind every
+    // surface, so bright photos calm down under the white veil.
+    'body::before {',
+    "  content: '';",
+    '  position: fixed;',
+    '  inset: 0;',
+    '  z-index: -1;',
+    '  pointer-events: none;',
+    `  background: rgba(0, 0, 0, ${LIGHT_SCRIM_ALPHA});`,
+    '}',
+    'body[data-ds-dark-theme]::before { display: none; }',
   ].join('\n')
 }
 

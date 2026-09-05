@@ -20,7 +20,11 @@ describe('mountBackground', () => {
     const css = tag?.textContent ?? ''
     expect(css).toContain('--dsw-alias-bg-base: rgba(255, 255, 255, 0.55)')
     expect(css).toContain('--dsw-specific-sidebar-fill: rgba(27, 27, 28, 0.55)')
+    expect(css).toMatch(/^body \{[^}]*--dsw-alias-bg-base: rgba\(255, 255, 255, 0\.55\) !important;/m)
+    expect(css).toMatch(/^body\[data-ds-dark-theme\] \{[^}]*--dsw-alias-bg-base: rgba\(21, 21, 23, 0\.55\) !important;/m)
     expect(css).toContain('background-image: var(--dsh-bg-image')
+    expect(css).toContain('body::before')
+    expect(css).toContain('background: rgba(0, 0, 0, 0.15)')
     expect(document.body.style.getPropertyValue('--dsh-bg-image')).toMatch(/^url\("https:/)
     dispose()
   })
