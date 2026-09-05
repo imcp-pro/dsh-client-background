@@ -20,6 +20,10 @@
 - 一个 dsh `web` profile（`dsh --profile web`，即 `dsh web`），带 `web-app` bundle。
 - 一个暴露基础主题 token `--dsw-alias-bg-base` / `--dsw-specific-sidebar-fill`、切换 `body[data-ds-dark-theme]` 暗色模式属性、并提供「插件」设置面板的 dsh 构建。
 
+## 主题
+
+效果会适配 dsh 的当前主题——浅色模式下是半透明白色表面、深色模式下是半透明深色表面，自动跟随主题（默认跟随系统）。**推荐使用深色模式**：照片呈现为有氛围感的深色背景。浅色模式下照片透过白色遮罩并带轻微暗化，观感更含蓄。
+
 ## 安装
 
 ### 从 GitHub 安装

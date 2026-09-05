@@ -20,6 +20,10 @@ A [dsh](https://github.com/deepseek-ai/deepseek-harness) Web client bundle that 
 - A dsh `web` profile (`dsh --profile web`, a.k.a. `dsh web`) with the `web-app` bundle.
 - A dsh build that exposes the base theme tokens `--dsw-alias-bg-base` / `--dsw-specific-sidebar-fill`, toggles the `body[data-ds-dark-theme]` dark-mode attribute, and serves the Plugins settings panel.
 
+## Themes
+
+The effect adapts to the active dsh theme — translucent white surfaces in light mode, translucent dark surfaces in dark mode — so it follows your theme (and system) automatically. **Dark mode is recommended**: the photo reads as a moody, high-contrast backdrop. In light mode the photo shows through a white veil with a slight darkening and looks more subdued.
+
 ## Installation
 
 ### From GitHub
